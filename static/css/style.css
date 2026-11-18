@@ -2041,3 +2041,24 @@ tbody td {
   .resource-summary-grid { grid-template-columns: 1fr 1fr; }
   .queue-stats { grid-template-columns: repeat(2, 1fr); }
 }
+
+/* MEDFLOW Premium UI */
+body {
+    font-family: 'Inter', sans-serif;
+    background: #f1f5f9;
+}
+
+button {
+    border-radius: 10px !important;
+    transition: all 0.25s ease;
+}
+
+button:hover {
+    transform: translateY(-2px);
+}
+
+.card, .stat-card {
+    border-radius: 16px !important;
+    box-shadow: 0 4px 18px rgba(15, 23, 42, 0.07);
+}
+
