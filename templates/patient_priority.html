@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>PULSEFLOW AI - Patient Priority</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        body{font-family:Arial;background:#f1f5f9;padding:25px;color:#172554}
+        .box{background:white;padding:22px;border-radius:14px;max-width:750px;margin:auto}
+        input,select,button{padding:12px;margin:6px;border:1px solid #ccc;border-radius:8px}
+        button{background:#2563eb;color:white;border:0}
+        table{width:100%;margin-top:20px;border-collapse:collapse}
+        td,th{padding:12px;border-bottom:1px solid #ddd;text-align:left}
+    </style>
+</head>
+<body>
+<div class="box">
+    <h1>PULSEFLOW AI</h1>
+    <h2>Patient Priority Queue</h2>
+    <p>Demo tool using staff-assigned priority.</p>
+    <input id="name" placeholder="Patient name">
+    <select id="priority">
+        <option>low</option><option>medium</option>
+        <option>high</option><option>critical</option>
+    </select>
+    <button onclick="addPatient()">Add Patient</button>
+    <button onclick="sortPatients()">Sort Priority</button>
+    <table>
+        <thead><tr><th>Patient</th><th>Staff Priority</th></tr></thead>
+        <tbody id="rows"></tbody>
+    </table>
+</div>
+<script>
+let patients=[];
+function addPatient(){
+    const name=document.getElementById('name').value.trim();
+    const priority=document.getElementById('priority').value;
+    if(!name){alert('Enter patient name');return;}
+    patients.push({name,staff_priority:priority});
+    document.getElementById('name').value='';
+    display();
+}
+async function sortPatients(){
+    const response=await fetch('/api/patient-priority',{
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({patients})
+    });
+    const result=await response.json();
+    if(!response.ok){alert(result.error||'API error');return;}
+    patients=result.patients;
+    display();
+}
+function display(){
+    document.getElementById('rows').innerHTML=patients.map(p=>
+        `<tr><td>${p.name}</td><td>${p.staff_priority}</td></tr>`
+    ).join('');
+}
+</script>
+</body>
+</html>

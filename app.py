@@ -2,7 +2,7 @@ import os
 from datetime import datetime
 
 from dotenv import load_dotenv
-from flask import Flask, jsonify, render_template, request
+from flask import render_template, Flask, jsonify, render_template, request
 
 from ai.explainer import explain_metrics
 from backend.database import (
@@ -546,6 +546,29 @@ def api_ai_explain():
 
 ensure_app_database()
 
+
+
+
+@app.route("/api/patient-priority", methods=["POST"])
+def patient_priority_api():
+    from patient_priority import prioritize_patients
+    from flask import request
+
+    data = request.get_json(silent=True) or {}
+    patients = data.get("patients", [])
+
+    if not isinstance(patients, list):
+        return jsonify({"error": "Patients must be a list"}), 400
+
+    return jsonify({
+        "success": True,
+        "patients": prioritize_patients(patients)
+    })
+
+
+@app.route("/patient-priority")
+def patient_priority_page():
+    return render_template("patient_priority.html")
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000, debug=False)
